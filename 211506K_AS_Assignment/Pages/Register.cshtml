@@ -1,33 +1,75 @@
 ﻿@page
 @model _211506K_AS_Assignment.Pages.Register.RegisterModel
-<link type="text/css" href="~/css/Register.css" />
-<section class="h-100 h-custom gradient-custom-2">
-    <div class="container py-5 h-100">
-        <form method="post">
+
+<style>
+    @this (min-width: 1025px) {
+    .h-custom {
+    height: 100vh !important;
+    }
+    }
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+    }
+    .card-registration .select-arrow {
+    top: 13px;
+    }
+
+    .gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #a1c4fd;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1))
+    }
+    .bg-indigo {
+    background-color: #4835d4;
+    }
+    @this (min-width: 992px) {
+    .card-registration-2 .bg-indigo {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    }
+    }
+    @this (max-width: 991px) {
+    .card-registration-2 .bg-indigo {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    }
+    }
+</style>
+
+<div class="container py-5 h-100">
+    <form method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12">
                 <div class="card card-registration card-registration-2" style="border-radius: 15px;">
                     <div class="card-body p-0">
                         <div class="row g-0">
                             <div class="col-lg-6">
+                                <div asp-validation-summary="All" class="text-danger"></div>
                                 <div class="p-5">
-                                
                                     <h3 class="fw-normal mb-5" style="color: #4835d4;">Register account</h3>
-
                                     <div class="row">
                                         <div class="col-md-6 mb-4 pb-2">
-
                                             <div class="form-outline">
-                                                <input type="text" id="form3Examplev2" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplev2" >First name</label>
+                                                <input type="text" id="form3Examplev2" class="form-control form-control-lg" asp-for="RModel.FirstName"/>
+                                                <label class="form-label" for="form3Examplev2" asp-for="RModel.FirstName">First name</label>
+                                                <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
                                             </div>
-
                                         </div>
                                         <div class="col-md-6 mb-4 pb-2">
 
                                             <div class="form-outline">
-                                                <input type="text" id="form3Examplev3" class="form-control form-control-lg"/>
-                                                <label class="form-label" for="form3Examplev3" >Last name</label>
+                                                <input type="text" id="form3Examplev3" class="form-control form-control-lg"asp-for="RModel.LastName"/>
+                                                <label class="form-label" for="form3Examplev3" asp-for="RModel.LastName">Last name</label>
+                                                <span asp-validation-for="RModel.LastName" class="text-danger"></span>
                                             </div>
 
                                         </div>
@@ -35,137 +77,90 @@
 
                                     <div class="mb-4 pb-2">
                                         <div class="form-outline">
-                                            <input type="text" id="form3Examplev4" class="form-control form-control-lg"  />
-                                            <label class="form-label" for="form3Examplev4" >Email</label>
+                                            <input type="text" id="form3Examplev4" class="form-control form-control-lg" asp-for="RModel.Email"/>
+                                            <label class="form-label" for="form3Examplev4" asp-for="RModel.Email">Email</label>
+                                            <span asp-validation-for="RModel.Email" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+
+                                        <div class="mb-4 pb-2">
+                                        <div class="form-outline">
+                                            <input type="password" id="form3Examplev4 password" class="form-control form-control-lg"  asp-for="RModel.Password"                                                                                onchange="checkPasswordStrength"/>
+                                            <label class="form-label" for="form3Examplev4" asp-for="RModel.Password">Password</label>
+                                            <span asp-validation-for="RModel.Password" class="text-danger"></span>
+                                            <p id="feedback"></p>
+                                        </div>
+                                    </div>
+
+                                        <div class="mb-4 pb-2">
+                                        <div class="form-outline">
+                                            <input type="password" id="form3Examplev4" class="form-control form-control-lg" asp-for="RModel.ConfirmPassword"/>
+                                            <label class="form-label" for="form3Examplev4" asp-for="RModel.ConfirmPassword">Confirm Password</label>
+                                            <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4 pb-2">
+                                        <div class="form-outline">
+                                             <input class="form-control" type="file" id="formFile" asp-for="RModel.Photo">
+                                             <label for="formFile" class="form-label" asp-for="RModel.Photo">Choose Photo (.JPG)</label>
+                                             <span asp-validation-for="RModel.Photo" class="text-danger"></span>
                                         </div>
                                     </div>
 
                                     <h6 class="mb-0 me-4">Gender: </h6>
-
-                                    <div class="form-check form-check-inline mb-0 me-4">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
-                                               value="option1" />
-                                        <label class="form-check-label" for="femaleGender">Female</label>
-                                    </div>
-
-                                    <div class="form-check form-check-inline mb-0 me-4">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
-                                               value="option2" />
-                                        <label class="form-check-label" for="maleGender">Male</label>
-                                    </div>
-
-                                    <div class="mb-4 pb-2">
-                                        <div class="form-outline">
-                                            <input type="text" id="form3Examplev4" class="form-control form-control-lg"/>
-                                            <label class="form-label" for="form3Examplev4">Credit Card Number</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4 pb-2 mb-md-0 pb-md-0">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="form3Examplev5" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplev5">Bussines Arena</label>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-6">
-
-                                            <select class="select">
-                                                <option value="1">Employees</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                                <option value="4">Four</option>
-                                            </select>
-
-                                        </div>
-                                    </div>
+                                    @foreach (var gender in Model.RModel.Genders)
+                                    {
+                                        <input type="radio" asp-for="RModel.Gender" value="@gender" />@gender<br />
+                                    }
 
                                 </div>
                             </div>
                             <div class="col-lg-6 bg-indigo text-white">
                                 <div class="p-5">
+                                    <h3 class="fw-normal mb-5">Personal Information</h3>
 
                                     <div class="mb-4 pb-2">
                                         <div class="form-outline form-white">
-                                            <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                                            <label class="form-label" for="form3Examplea2" >Address</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4 pb-2">
-                                        <div class="form-outline form-white">
-                                                <label></label>
-                                                <textarea  cols="30" rows="10" class="form-control"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-5 mb-4 pb-2">
-
-                                            <div class="form-outline form-white">
-                                                <input type="text" id="form3Examplea4" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea4">Zip Code</label>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-7 mb-4 pb-2">
-
-                                            <div class="form-outline form-white">
-                                                <input type="text" id="form3Examplea5" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea5">Place</label>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4 pb-2">
-                                        <div class="form-outline form-white">
-                                            <input type="text" id="form3Examplea6" class="form-control form-control-lg" />
-                                            <label class="form-label" for="form3Examplea6">Country</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-5 mb-4 pb-2">
-
-                                            <div class="form-outline form-white">
-                                                <input type="text" id="form3Examplea7" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea7">Code +</label>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-7 mb-4 pb-2">
-
-                                            <div class="form-outline form-white">
-                                                <input type="text" id="form3Examplea8" class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea8">Phone Number</label>
-                                            </div>
-
+                                            <input type="text" id="form3Examplea2" class="form-control form-control-lg" asp-for="RModel.Address"/>
+                                            <label class="form-label" for="form3Examplea2" asp-for="RModel.Address">Postal Code</label>
+                                            <span asp-validation-for="RModel.Address" class="text-danger" ></span>
                                         </div>
                                     </div>
 
                                     <div class="mb-4">
                                         <div class="form-outline form-white">
-                                            <input type="text" id="form3Examplea9" class="form-control form-control-lg" />
-                                            <label class="form-label" for="form3Examplea9">Your Email</label>
+                                            <input type="text" id="form3Examplev4" class="form-control form-control-lg" asp-for="RModel.CreditCard"/>
+                                            <label class="form-label" for="form3Examplev4" asp-for="RModel.CreditCard">Credit Card Number</label>
+                                            <span asp-validation-for="RModel.CreditCard" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="form-check d-flex justify-content-start mb-4 pb-3">
-                                        <input class="form-check-input me-3" type="checkbox" value="" id="form2Example3c" />
-                                        <label class="form-check-label text-white" for="form2Example3">
-                                            I do accept the <a href="#!" class="text-white"><u>Terms and Conditions</u></a> of your
-                                            site.
-                                        </label>
+                                    <div class="row">
+                                        <div class="col-md-5 mb-4 pb-2">
+
+                                            <div class="form-outline form-white">
+                                                <input type="text" id="form3Examplea4" class="form-control form-control-lg" asp-for="RModel.PhoneNumber"/>
+                                                <label class="form-label" for="form3Examplea4" asp-for="RModel.PhoneNumber">Phone Number</label>
+                                                <span asp-validation-for="RModel.PhoneNumber" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
                                     </div>
 
-                                    <button type="button" class="btn btn-light btn-lg"
+                                    <div class="mb-4 pb-2">
+                                        <div class="form-outline form-white">
+                                            <textarea  cols="10" rows="5" class="form-control" asp-for="RModel.AboutMe"></textarea>
+                                            <label asp-for="RModel.AboutMe">About me</label>
+                                            <span asp-validation-for="RModel.AboutMe" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" asp-for="RModel.Token" value="" />
+                                    <button type="submit" class="btn btn-light btn-lg"
                                             data-mdb-ripple-color="dark">
                                         Register
                                     </button>
-
                                 </div>
                             </div>
                         </div>
@@ -173,6 +168,49 @@
                 </div>
             </div>
         </div>
-        </form>>
-    </div>
-</section>
+    </form>
+</div>
+
+<script>
+    function checkPasswordStrength() {
+        var password = document.getElementById("password").value;
+        var feedback = document.getElementById("feedback");
+
+        if (password.length < 8) {
+            feedback.innerHTML = "Weak Password";
+            return false;
+        }
+
+        var hasLowercase = false;
+        var hasUppercase = false;
+        var hasDigit = false;
+        for (var i = 0; i < password.length; i++) {
+            if (password[i] >= 'a' && password[i] <= 'z') {
+                hasLowercase = true;
+            } else if (password[i] >= 'A' && password[i] <= 'Z') {
+                hasUppercase = true;
+            } else if (password[i] >= '0' && password[i] <= '9') {
+                hasDigit = true;
+            }
+        }
+        if (!hasLowercase || !hasUppercase || !hasDigit) {
+            feedback.innerHTML = "Weak Password";
+            return false;
+        }
+
+        feedback.innerHTML = "Strong Password";
+        return true;
+    }
+</script>
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleCaptchaConfig.SiteKey"></script>
+<script>
+    setInterval(getToken(), 115000)
+    function getToken() {
+        grecaptcha.ready(function () {
+            grecaptcha.execute('@Model.GoogleCaptchaConfig.SiteKey', { action: 'submit' }).then(function (token) {
+                console.log(token)
+                document.getElementById("RModel_Token").value = token
+            });
+        });
+    }
+</script>

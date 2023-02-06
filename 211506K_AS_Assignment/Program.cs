@@ -1,13 +1,25 @@
 using _211506K_AS_Assignment.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<AuthDbContext>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+builder.Services.Configure<GoogleCaptchaConfig>(builder.Configuration.GetSection("GoogleReCaptcha"));
+builder.Services.AddDbContext<AuthDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Sqlite");
+    options.UseSqlite(connectionString);
+});
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
+});
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
     options.Cookie.Name = "MyCookieAuth";
@@ -23,7 +35,16 @@ policy => policy.RequireClaim("Department", "HR"));
 builder.Services.ConfigureApplicationCookie(Config =>
 {
     Config.LoginPath = "/Login";
+    Config.AccessDeniedPath = "/Errors/401";
 });
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddDistributedMemoryCache(); //save session in memory
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(30);
+});
+
 
 var app = builder.Build();
 
@@ -41,6 +62,8 @@ app.UseStaticFiles();
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 

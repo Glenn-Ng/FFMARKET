@@ -1,8 +1,10 @@
+using _211506K_AS_Assignment.Model;
 using _211506K_AS_Assignment.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace _211506K_AS_Assignment.Pages
@@ -10,11 +12,13 @@ namespace _211506K_AS_Assignment.Pages
     public class LoginModel : PageModel
     {
         [BindProperty]
-        public Login LModel { get; set; }
-        private readonly SignInManager<IdentityUser> signInManager;
-        public LoginModel(SignInManager<IdentityUser> signInManager)
+        public Login LModel { get; set; } = new();
+        private readonly SignInManager<ApplicationUser> signInManager;
+        public GoogleCaptchaConfig GoogleCaptchaConfig { get; }
+        public LoginModel(SignInManager<ApplicationUser> signInManager, IOptions<GoogleCaptchaConfig> googleCaptchaConfig)
         {
             this.signInManager = signInManager;
+            this.GoogleCaptchaConfig = googleCaptchaConfig.Value;
         }
         public void OnGet()
         {

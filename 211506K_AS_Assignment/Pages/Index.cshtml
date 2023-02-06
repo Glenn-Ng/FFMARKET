@@ -1,9 +1,55 @@
 ﻿@page
 @model IndexModel
+@using Microsoft.AspNetCore.Identity;
+@using _211506K_AS_Assignment.Model;
+@using Microsoft.AspNetCore.DataProtection;
+@using System.Text;
+
+
+@inject UserManager<ApplicationUser> _userManager;
 @{
     ViewData["Title"] = "Home page";
+    var user = await _userManager.GetUserAsync(User);
+    var dataProtectionProvider = DataProtectionProvider.Create("EncryptData");
+    var protector = dataProtectionProvider.CreateProtector("MySecretKey");
+    var decryptedCreditCard = protector.Unprotect(user.CreditCard);
 }
+
+<style>
+    .line-1 {
+        border-top: 1px solid black;
+    }
+</style>
 
 <div class="text-center">
     <h1 class="display-4">Welcome to Fresh Farm Market!</h1>
+</div>
+
+<div>
+    <table>
+        <tr>
+            <th class="headcol">Full Name: </th>
+            <td class="long">@(user?.FullName ?? "No Name")</td>
+        </tr>
+        <tr class="line-1">
+            <th class="headcol">Email: </th>
+            <td class="long">@(user?.Email ?? "No sign in")</td>
+        </tr>
+        <tr class="line-1">
+            <th class="headcol">Postal Code: </th>
+            <td class="long">@(user?.Address ?? "No Postal Code")</td>
+        </tr>
+        <tr class="line-1">
+            <th class="headcol">Credit Card:</th>
+            <td class="long">@(decryptedCreditCard ?? "No Credit Card")</td>
+        </tr>
+        <tr class="line-1">
+            <th class="headcol">Phone Number: </th>
+            <td class="long">@(user?.PhoneNumber ?? "No Phone Number")</td>
+        </tr>
+        <tr class="line-1">
+            <th class="headcol">About Me: </th>
+            <td class="long">@(user?.AboutMe ?? "No About Me")</td>
+        </tr>
+    </table>
 </div>
